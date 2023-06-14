@@ -1,8 +1,10 @@
 const express=require('express');
 const router=express.Router();
-const { check, validationResult } = require('express-validator');
 const gravatar = require('gravatar')
 const bcrypt=require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const config=require('config')
+const { check, validationResult } = require('express-validator');
 
 const User = require('../../models/User')
 
@@ -35,7 +37,7 @@ router.post('/',[
     let user=await User.findOne({email:email});
 
     if(user) {
-        res.status(400).json({ errors: [{msg: "User already exist"}]});
+        return res.status(400).json({ errors: [{msg: "User already exist"}]});
     }
 
     // Get users gravatar
@@ -69,7 +71,30 @@ router.post('/',[
 
     // Return jsonwebtoken
 
-    res.send("User registered")
+    //对于jwt加密，payload就像body一样，意思是 jwt 解码后会变成
+    /*
+    {
+        "user": {
+            "id": "用户的唯一标识符或用户 ID"
+        }
+    }
+    */
+    const payload = {
+        user: {
+            id:user.id
+        }
+    }
+
+    jwt.sign(
+        payload,
+        config.get('jwtToken'),
+        {expiresIn:36000},
+        (err,token)=>{
+            if(err) {throw err;}
+            res.json({token});
+        }
+    );
+
 
     } catch(err) {
         console.log(err.message);
