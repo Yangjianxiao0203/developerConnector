@@ -4,7 +4,7 @@
   "description": "React+Express+MongoDB",
   "main": "server.js",
   "scripts": {
-    "start":"node server",
+    "start": "node server",
     "server": "nodemon server"
   },
   "author": "Jianxiao",
@@ -17,11 +17,13 @@
     "express-validator": "^7.0.1",
     "gravatar": "^1.8.2",
     "jsonwebtoken": "^9.0.0",
+    "mongodb": "^5.6.0",
     "mongoose": "^7.2.4",
     "request": "^2.88.2"
   },
   "devDependencies": {
     "concurrently": "^8.2.0",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "prettier": "^2.8.8"
   }
 }
