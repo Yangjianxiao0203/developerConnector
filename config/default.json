@@ -1,4 +1,6 @@
 {
   "mongoURI": "mongodb+srv://root:Distinctive0930@jianxiaomongo.mg7m0oz.mongodb.net/?retryWrites=true&w=majority",
-  "jwtToken": "secrettoken"
+  "jwtToken": "secrettoken",
+  "githubClientId": "8d890204f445464bfab5",
+  "githubSecret": "b3f3a32f2bcc26f0a93037952aea0477e05b7b8f"
 }

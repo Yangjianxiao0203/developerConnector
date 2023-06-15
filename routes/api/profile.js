@@ -1,4 +1,8 @@
 const express=require('express');
+const request=require('request');
+const axios=require('axios');
+
+const config=require('config');
 const auth=require('../../middleware/auth');
 const router=express.Router();
 const {check, validationResult}= require('express-validator');
@@ -205,5 +209,102 @@ router.delete('/experience/:exp_id',auth,async (req,res)=>{
     }
 })
 
+// @route   PUT api/profiles/education
+// @desc    add profile experience
+// @access  Private: by token
+router.put('/education',[
+    auth,
+    check('school','School is required').not().isEmpty(),
+    check('degree','Degree is required').not().isEmpty(),
+    check('from','From date is required').not().isEmpty(),
+    check('fieldofstudy','Field of study is required ').not().isEmpty()
+],async (req,res)=>{
+    const error=validationResult(req);
+    if(!error.isEmpty()) {
+        return res.status(400).json({errors:error.array()})
+    }
+
+    //destructure the request
+    const {
+        school,
+        degree,
+        fieldofstudy,
+        from,
+        to,
+        current,
+        description
+    }=req.body;
+
+    const newEdu= {
+        school:school,
+        degree:degree,
+        fieldofstudy:fieldofstudy,
+        from:from,
+        to:to,
+        current:current,
+        description:description
+    }
+
+    // update the education in mangoDB
+    try {
+        const profile=await Profile.findOne({user:req.user.id});
+        // 在数组最前头加一个对象，arrayObject.unshift(object)
+        profile.education.unshift(newEdu);
+        await profile.save();
+        res.json(profile);
+
+    } catch(err) {
+        res.status(500).send('Server Error: '+err.message);
+    }
+})
+
+// @route   DELETE api/profiles/education/:edu_id
+// @desc    delete one of profile education
+// @access  Private: by token
+router.delete('/education/:edu_id',auth,async (req,res)=>{
+    try {
+        const profile= await Profile.findOne({user:req.user.id})
+        const removeIndex= profile.education.findIndex((elem)=>{
+            return elem._id.toString()==req.params.edu_id
+        })
+        if(removeIndex==-1) {return res.status(400).send("education not existed")}
+        else {
+            profile.education.splice(removeIndex, 1);
+        }
+        await profile.save();
+        res.status(200).json(profile);
+
+    } catch(err) {
+        res.status(500).send("Server Error: "+err.message)
+    }
+})
+
+// @route   GET api/profiles/github/:username
+// @desc    get user repos from github
+// @access  public 
+router.get('/github/:username',async (req,res)=>{
+    try {
+        const options = {
+          url: `http://api.github.com/users/${req.params.username}/repos`,
+          method: 'GET',
+          headers: { 'user-agent': 'node.js' },
+          params: {
+            per_page: 5,
+            sort: 'created:asc',
+            client_id: config.get('githubClientId'),
+            client_secret: config.get('githubSecret')
+          }
+        };
+      
+        const response = await axios(options);
+        res.json(response.data);
+      } catch (err) {
+        if (err.response && err.response.status === 404) {
+          res.status(404).json({ msg: 'GitHub not found' });
+        } else {
+          res.status(500).send('Server Error: ' + err.message);
+        }
+      }
+})
 
 module.exports=router;
