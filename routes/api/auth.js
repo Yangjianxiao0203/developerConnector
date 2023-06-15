@@ -47,7 +47,7 @@ router.post('/',[
     const {password,email}=req.body;
 
     try{
-    // See if user exists : if exist return 400
+    // See if user doesn't exist : if not exist return 400
     let user=await User.findOne({email:email});
 
     if(!user) {
@@ -76,7 +76,6 @@ router.post('/',[
             res.json({token});
         }
     );
-
 
     } catch(err) {
         console.log(err.message);
