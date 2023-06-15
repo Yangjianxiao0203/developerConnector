@@ -136,4 +136,74 @@ router.delete('/',auth,async (req,res)=>{
     }
 })
 
+// @route   PUT api/profiles/experience
+// @desc    add profile experience
+// @access  Private: by token
+router.put('/experience',[
+    auth,
+    check('title','Title is required').not().isEmpty(),
+    check('company','Company is required').not().isEmpty(),
+    check('from','From date is required').not().isEmpty(),
+],async (req,res)=>{
+    const error=validationResult(req);
+    if(!error.isEmpty()) {
+        return res.status(400).json({errors:error.array()})
+    }
+
+    //destructure the request
+    const {
+        title,
+        company,
+        location,
+        from,
+        to,
+        current,
+        description
+    }=req.body;
+
+    const newExp= {
+        title:title,
+        company:company,
+        location:location,
+        from:from,
+        to:to,
+        current:current,
+        description:description
+    }
+
+    // update the experience in mangoDB
+    try {
+        const profile=await Profile.findOne({user:req.user.id});
+        // 在数组最前头加一个对象，arrayObject.unshift(object)
+        profile.experience.unshift(newExp);
+        await profile.save();
+        res.json(profile);
+
+    } catch(err) {
+        res.status(500).send('Server Error: '+err.message);
+    }
+})
+
+// @route   DELETE api/profiles/experience/:exp_id
+// @desc    delete one of profile experience
+// @access  Private: by token
+router.delete('/experience/:exp_id',auth,async (req,res)=>{
+    try {
+        const profile= await Profile.findOne({user:req.user.id})
+        const removeIndex= profile.experience.findIndex((elem)=>{
+            return elem._id.toString()==req.params.exp_id
+        })
+        if(removeIndex==-1) {return res.status(400).send("experience not existed")}
+        else {
+            profile.experience.splice(removeIndex, 1);
+        }
+        await profile.save();
+        res.status(200).json(profile);
+
+    } catch(err) {
+        res.status(500).send("Server Error: "+err.message)
+    }
+})
+
+
 module.exports=router;
