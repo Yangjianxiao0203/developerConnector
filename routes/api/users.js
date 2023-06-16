@@ -11,10 +11,13 @@ const User = require('../../models/User')
 // @route   GET api/users
 // @desc    Test route
 // @access  Public
-router.get('/',(req,res)=>{ 
-    console.log(req.body);
-
-    res.send("User route")
+router.get('/',async (req,res)=>{ 
+    try {
+        const users=await User.find().sort({date:-1});
+        res.status(200).json(users)
+    } catch(err) {
+        res.status(500).send("Server Error")
+    }
 });
 
 // @route   POST api/users
