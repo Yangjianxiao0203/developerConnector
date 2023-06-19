@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment,useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./components/layout/Navbar";
 import Landing from "./components/layout/Landing";
@@ -7,14 +7,27 @@ import Register from "./components/auth/Register";
 import Alert from "./components/layout/Alert";
 import "./App.css";
 
+import setAuthToken from "./utils/setAuthToken";
+
 //Redux
 import { Provider } from "react-redux";
 import store from "./store";
-
+import { loadUser } from "./actions/auth";
 
 //npx prettier --write . 格式化代码
 
+if(localStorage.token) {
+  setAuthToken(localStorage.token);
+}
+
 const App = () => {
+  
+//会触发一个 loadUser 的 Redux action。当你调用 store.dispatch(action) 时，
+//Redux 会将该 action 传递给 reducer，然后根据 action 的类型来更新相应的状态。
+  useEffect(()=>{
+    store.dispatch(loadUser());
+  },[])
+
   return (
     <Provider store={store}>
       <Router>

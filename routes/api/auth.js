@@ -23,16 +23,7 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// @route   GET api/users
-// @desc    Test route
-// @access  Public
-router.get("/", (req, res) => {
-  console.log(req.body);
-
-  res.send("User route");
-});
-
-// @route   POST api/users
+// @route   POST api/auth
 // @desc    authenticate user && get token
 // @access  Public
 router.post(
