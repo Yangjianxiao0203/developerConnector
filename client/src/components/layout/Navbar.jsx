@@ -4,14 +4,19 @@ import { connect } from "react-redux";
 import { logout } from "../../actions/auth";
 import PropTypes from "prop-types";
 
-const Navbar = ({logout,auth: {isAuthenticated,loading}}) => {
-
+const Navbar = ({ logout, auth: { isAuthenticated, loading } }) => {
   const authLinks = (
     <ul>
       <li>
-        <Link to={'/register'} onClick={logout}>
+        <Link to="/dashboard">
+          <i className="fas fa-user"></i>{" "}
+          <span className="hide-sm">Dashboard</span>
+        </Link>
+      </li>
+      <li>
+        <Link to={"/register"} onClick={logout}>
           {/* 这通常是与 Font Awesome 图标库一起使用的方式，其中 fas 是 Font Awesome 提供的默认样式集，fa-sign-out-alt 是具体的图标类名，表示一个带有向外箭头的登出图标。 */}
-          <i className="fas fa-sign-out-alt"></i>{' '}
+          <i className="fas fa-sign-out-alt"></i>{" "}
           <span className="hide-sm">Logout</span>
         </Link>
       </li>
@@ -38,19 +43,17 @@ const Navbar = ({logout,auth: {isAuthenticated,loading}}) => {
           <i className="fas fa-code"></i> DevConnector
         </Link>
       </h1>
-      {
-        !loading && (<>{isAuthenticated ? authLinks : guestLinks}</>)
-      }
+      {!loading && <>{isAuthenticated ? authLinks : guestLinks}</>}
     </nav>
   );
 };
 
 Navbar.propTypes = {
   logout: PropTypes.func.isRequired,
-}
+};
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
-})
+});
 
 export default connect(mapStateToProps, { logout })(Navbar);

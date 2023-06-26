@@ -1,10 +1,10 @@
 import React, { Fragment, useState } from "react";
-import { Link,Navigate } from "react-router-dom";
-import {connect} from "react-redux";
+import { Link, Navigate } from "react-router-dom";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { login } from "../../actions/auth";
 
-const Login = ({ login,isAuthenticated }) => {
+const Login = ({ login, isAuthenticated }) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -12,19 +12,19 @@ const Login = ({ login,isAuthenticated }) => {
 
   const { email, password } = formData;
   //{...formData, [e.target.name]: e.target.value} 复制formData的所有属性，然后修改指定属性的值，根据input的name属性来指定修改哪个属性的值
-  const onChange = (e) =>{
-    setFormData({...formData, [e.target.name]: e.target.value});
+  const onChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
     // console.log(e.target.name +" : "+ e.target.value);
-  }
+  };
 
-  const onSubmit = async (e) =>{
+  const onSubmit = async (e) => {
     e.preventDefault();
-    login({email,password});
-  }
+    login({ email, password });
+  };
 
   //redirect if logged in
-  if(isAuthenticated){
-    return <Navigate to="/dashboard"/>
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" />;
   }
 
   return (
@@ -33,9 +33,23 @@ const Login = ({ login,isAuthenticated }) => {
       <p className="lead">
         <i className="fas fa-user"></i> Sign into Your Account
       </p>
-      <form className="form" onSubmit={e=>{onSubmit(e)}}>
+      <form
+        className="form"
+        onSubmit={(e) => {
+          onSubmit(e);
+        }}
+      >
         <div className="form-group">
-          <input type="email" placeholder="Email Address" name="email" value={email} onChange={e=>{onChange(e)}} required/>
+          <input
+            type="email"
+            placeholder="Email Address"
+            name="email"
+            value={email}
+            onChange={(e) => {
+              onChange(e);
+            }}
+            required
+          />
         </div>
         <div className="form-group">
           <input
@@ -44,10 +58,10 @@ const Login = ({ login,isAuthenticated }) => {
             name="password"
             minLength="6"
             value={password}
-            onChange={e=>onChange(e)}
+            onChange={(e) => onChange(e)}
           />
         </div>
-        <input type="submit" value="login" className="btn btn-primary"/>
+        <input type="submit" value="login" className="btn btn-primary" />
       </form>
       <p className="my-1">
         Don't have an account? <Link to="/Register">Sign up</Link>
@@ -58,11 +72,11 @@ const Login = ({ login,isAuthenticated }) => {
 
 Login.propTypes = {
   login: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool
-}
+  isAuthenticated: PropTypes.bool,
+};
 
-const mapStateToProps = state =>({
-  isAuthenticated: state.auth.isAuthenticated
-})
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
 
-export default connect(mapStateToProps,{ login })(Login);
+export default connect(mapStateToProps, { login })(Login);
