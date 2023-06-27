@@ -205,9 +205,11 @@ router.put(
     // update the experience in mangoDB
     try {
       const profile = await Profile.findOne({ user: req.user.id });
+      console.log("find profile " + profile==null)
       // 在数组最前头加一个对象，arrayObject.unshift(object)
       profile.experience.unshift(newExp);
       await profile.save();
+      console.log("save success")
       res.json(profile);
     } catch (err) {
       res.status(500).send("Server Error: " + err.message);
