@@ -37,7 +37,7 @@ const Navbar = ({ logout, auth: { isAuthenticated, loading } }) => {
   );
 
   return (
-    <nav class="navbar bg-dark">
+    <nav className="navbar bg-dark">
       <h1>
         <Link to="/">
           <i className="fas fa-code"></i> DevConnector

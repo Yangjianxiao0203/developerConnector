@@ -67,12 +67,15 @@ const AddExperience = ({ addEducation,router }) => {
         </div>
         <div className="form-group">
           <p>
-            <input type="checkbox" name="current" value="" /> Current School or Bootcamp
+            <input type="checkbox" name="current" value="" onChange={()=>{
+                setFormData({...formData,current:!current})
+                toggleDisabled(!toDateDisabled)
+            }}/> Current School or Bootcamp
           </p>
         </div>
         <div className="form-group">
           <h4>To Date</h4>
-          <input type="date" name="to" value={to} onChange={onChange}/>
+          <input type="date" name="to" value={to} onChange={onChange} disabled={toDateDisabled}/>
         </div>
         <div className="form-group">
           <textarea

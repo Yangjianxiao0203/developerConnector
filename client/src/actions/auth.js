@@ -23,7 +23,7 @@ export const loadUser = () => async (dispatch) => {
   }
 
   try {
-    const res = await axios.get("/api/auth"); // 用token拿到user collection data,放到Redux state中
+    const res = await axios.get("/api/auth"); // 用token拿到user,放到Redux state中
     dispatch({
       type: USER_LOADED,
       payload: res.data,

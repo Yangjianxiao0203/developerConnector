@@ -9,6 +9,7 @@ const { check, validationResult } = require("express-validator");
 
 const Profile = require("../../models/Profile");
 const User = require("../../models/User");
+const Post=require("../../models/Post");
 
 // @route   GET api/profiles
 // @desc    get all profiles
@@ -162,9 +163,12 @@ router.get("/user/:user_id", async (req, res) => {
 // @access  Private: by token
 router.delete("/", auth, async (req, res) => {
   try {
+
     //Profile 中有user属性，User中有_id属性
     await Profile.findOneAndDelete({ user: req.user.id });
     await User.findOneAndDelete({ _id: req.user.id });
+    await Post.deleteMany({user:req.user.id})
+
     return res.status(200).json({ msg: "User deleted" });
   } catch (err) {
     res.status(500).send("Server Error: " + err.message);
